@@ -1,11 +1,11 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import {PrismaClient} from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { sendMessage, connectRabbitMQ } from './rabbitmq.js';
 
 const prisma = new PrismaClient();
 const app = express();
-const PORT =  process.env.PORT;
+const PORT = process.env.PORT;
 app.use(bodyParser.json());
 
 app.listen(PORT, () => {
@@ -23,12 +23,6 @@ app.post('/shop', async (req, res) => {
     const shop = await prisma.shop.create({
       data: { name },
     });
-    await sendMessage('action-queue', {
-      shopId: shop.id,
-      action: 'create_shop',
-      details: { name },
-      date: new Date(),
-    });
 
     res.status(201).json(shop);
   } catch (error) {
@@ -38,7 +32,7 @@ app.post('/shop', async (req, res) => {
 
 app.post('/products', async (req, res) => {
   const { plu, name } = req.body;
-  
+
   try {
     const product = await prisma.product.create({
       data: { plu, name },
@@ -88,11 +82,14 @@ app.patch('/stocks/:id/increase', async (req, res) => {
   const { on_shelf } = req.body;
 
   try {
+    
     const stock = await prisma.stock.update({
       where: { id: parseInt(id) },
       data: { on_shelf: { increment: on_shelf } },
+      include: { product: true },
     });
-
+    
+    console.log(stock);
     await sendMessage('action-queue', {
       shopId: stock.shopId,
       plu: stock.product.plu,
@@ -115,6 +112,7 @@ app.patch('/stocks/:id/decrease', async (req, res) => {
     const stock = await prisma.stock.update({
       where: { id: parseInt(id) },
       data: { on_shelf: { decrement: on_shelf } },
+      include: { product: true },
     });
 
     await sendMessage('action-queue', {
@@ -174,7 +172,7 @@ app.get('/products', async (req, res) => {
       },
     });
 
-    await sendMessage({
+    await sendMessage('action-queue', {
       action: 'get_products',
       details: { name, plu },
       date: new Date(),

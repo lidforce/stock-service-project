@@ -4,7 +4,7 @@
 1. `git clone https://github.com/lidforce/stock-service-project.git`
 3. Ввести `npm install`
 3. Создать базу данных PostgreSQL и заменить значения переменных окружения в файле `.env`
-4. Запустить RabbitMQ командой `npm run rabbitmq:start`
+4. Запустить установку RabbitMQ через Docker командой `npm run rabbitmq:start` 
 5. Для миграции схемы базы данных: `npm run prisma:migrate`
 6. `npm run dev` или `npm start`
 
@@ -27,7 +27,7 @@ curl -X POST http://localhost:3000/products \
 -d '{
   "plu": "101010",
   "name": "Название товара"
-}
+}'
 ```
 
 ### Создание остатка
@@ -40,7 +40,7 @@ curl -X POST http://localhost:3000/stocks \
   "productId": 1,
   "on_shelf": 10,
   "in_order": 0
-}
+}'
 ```
 
 ### Увеличение остатка
@@ -50,7 +50,7 @@ curl -X PATCH http://localhost:3000/stocks/1/increase \
 -H "Content-Type: application/json" \
 -d '{
   "on_shelf": 1
-}
+}'
 ```
 
 ### Уменьшение остатка
@@ -60,7 +60,7 @@ curl -X PATCH http://localhost:3000/stocks/1/decrease \
 -H "Content-Type: application/json" \
 -d '{
   "on_shelf": 1
-}
+}'
 ```
 
 ### Получение остатков
