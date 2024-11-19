@@ -2,11 +2,12 @@
 
 ## Установка
 1. `git clone https://github.com/lidforce/stock-service-project.git`
-3. Ввести `npm install`
+2. Ввести `npm install`
 3. Создать базу данных PostgreSQL и заменить значения переменных окружения в файле `.env`
 4. Запустить установку RabbitMQ через Docker командой `npm run rabbitmq:start` 
 5. Для миграции схемы базы данных: `npm run prisma:migrate`
-6. `npm run dev` или `npm start`
+6. Следовать установке [history-service](https://github.com/lidforce/history-service-project)
+7. `npm run dev` или `npm start`
 
 
 ## API
